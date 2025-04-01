@@ -1,0 +1,25 @@
+{
+  "name": "sistema-cadastro-colaboradores",
+  "version": "1.0.0",
+  "description": "Sistema de cadastro de colaboradores com CRUD completo",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "cadastro",
+    "colaboradores",
+    "nodejs",
+    "mysql",
+    "express"
+  ],
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
