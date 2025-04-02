@@ -202,6 +202,21 @@ tr:hover {
 .form-container.collapsed {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
+#exportarCSV {
+  background-color: #bcd43c;
+  color: white;
+  padding: 6px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+#exportarCSV:hover {
+  background-color: #bcd43c;
+}
+
 
 /* Layout de formulário em colunas */
 .form-row {

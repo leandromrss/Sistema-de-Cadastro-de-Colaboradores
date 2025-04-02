@@ -328,3 +328,84 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = '/login.html';
   }
 });
+
+document.getElementById('exportarCSV').addEventListener('click', async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login.html';
+      return;
+    }
+
+    // Obter valores dos filtros
+    const nome = document.getElementById('filtroNome')?.value.trim() || '';
+    const cpf = document.getElementById('filtroCPF')?.value.trim() || '';
+    const setor = document.getElementById('filtroSetor')?.value.trim() || '';
+    const cargo = document.getElementById('filtroCargo')?.value.trim() || '';
+    const lider_direto = document.getElementById('filtroLider')?.value.trim() || '';
+    const dataInicio = document.getElementById('filtroDataInicio')?.value.trim() || '';
+    const dataFim = document.getElementById('filtroDataFim')?.value.trim() || '';
+
+    // Construir os parâmetros de consulta
+    const queryParams = new URLSearchParams();
+    if (nome) queryParams.append('nome', nome);
+    if (cpf) queryParams.append('cpf', cpf);
+    if (setor) queryParams.append('setor', setor);
+    if (cargo) queryParams.append('cargo', cargo);
+    if (lider_direto) queryParams.append('lider_direto', lider_direto);
+    if (dataInicio) queryParams.append('dataInicio', dataInicio);
+    if (dataFim) queryParams.append('dataFim', dataFim);
+    
+    // Construir URL com parâmetros apenas se houver algum
+    const queryString = queryParams.toString();
+    const url = `/api/colaboradores/export${queryString ? '?' + queryString : ''}`;
+    
+    console.log("Tentando exportar com URL:", url); // Depuração
+    
+    // Fazer a requisição
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    console.log("Status da resposta:", response.status); // Depuração
+    
+    if (!response.ok) {
+      // Tentar obter detalhes do erro
+      try {
+        const errorData = await response.json();
+        console.error("Detalhes do erro:", errorData);
+        throw new Error(errorData.message || `Erro ${response.status}`);
+      } catch (jsonError) {
+        throw new Error(`Erro ${response.status}: Não foi possível obter o relatório`);
+      }
+    }
+
+    // Verificar o tipo de conteúdo da resposta
+    const contentType = response.headers.get('content-type');
+    console.log("Tipo de conteúdo:", contentType); // Depuração
+    
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      console.log("Resposta JSON:", data); // Depuração
+      if (data.message) {
+        alert(data.message);
+        return;
+      }
+    }
+
+    const blob = await response.blob();
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'relatorio_colaboradores.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (error) {
+    console.error('Erro ao exportar CSV:', error);
+    alert('Erro ao exportar o relatório: ' + error.message);
+  }
+});
+

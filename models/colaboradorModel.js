@@ -97,6 +97,49 @@ class ColaboradorModel {
       throw error;
     }
   }
-}
+  static async searchWithFilters(filtros) {
+    try {
+        let query = 'SELECT * FROM colaboradores';
+        let params = [];
+        let conditions = [];
 
+        if (filtros.nome) {
+            conditions.push('nome LIKE ?');
+            params.push(`%${filtros.nome}%`);
+        }
+        if (filtros.cpf) {
+            conditions.push('cpf LIKE ?');
+            params.push(`%${filtros.cpf}%`);
+        }
+        if (filtros.setor) {
+            conditions.push('setor LIKE ?');
+            params.push(`%${filtros.setor}%`);
+        }
+        if (filtros.cargo) {
+            conditions.push('cargo LIKE ?');
+            params.push(`%${filtros.cargo}%`);
+        }
+        if (filtros.lider_direto) {
+            conditions.push('lider_direto LIKE ?');
+            params.push(`%${filtros.lider_direto}%`);
+        }
+        if (filtros.dataInicio && filtros.dataFim) {
+            conditions.push('data_nascimento BETWEEN ? AND ?');
+            params.push(filtros.dataInicio, filtros.dataFim);
+        }
+
+        // Se houver filtros, adiciona WHERE
+        if (conditions.length > 0) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        query += ' ORDER BY nome'; // Ordena pelo nome para melhorar visualização
+
+        const [rows] = await db.query(query, params);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+}
+}
 module.exports = ColaboradorModel;
