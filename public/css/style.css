@@ -8,7 +8,7 @@
 
 body {
   background-color: #f5f5f5;
-  color: #333;
+  color: #000000;
   line-height: 1.6;
 }
 
@@ -33,7 +33,7 @@ header {
 }
 
 header h1 {
-  color: #2c3e50;
+  color: #000000;
 }
 
 .user-info {
@@ -69,7 +69,7 @@ header h1 {
 
 button {
   padding: 8px 16px;
-  background-color: #3498db;
+  background-color: #bcd43c;
   color: white;
   border: none;
   border-radius: 4px;
@@ -78,15 +78,15 @@ button {
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: #bcd43c;
 }
 
 .btn-success {
-  background-color: #2ecc71;
+  background-color: #bcd43c;
 }
 
 .btn-success:hover {
-  background-color: #27ae60;
+  background-color: #bcd43c;
 }
 
 /* Estilos da tabela */
@@ -101,7 +101,7 @@ button:hover {
 
 .table-container h2 {
   margin-bottom: 20px;
-  color: #2c3e50;
+  color: #000000;
 }
 
 table {
@@ -165,7 +165,7 @@ tr:hover {
 }
 
 .form-header h2 {
-  color: #2c3e50;
+  color: #000000;
   margin: 0;
 }
 

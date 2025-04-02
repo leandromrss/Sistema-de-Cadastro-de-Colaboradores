@@ -29,7 +29,7 @@
 }
 
 .tab.active {
-  background-color: #3498db;
+  background-color: #bcd43c;
   color: white;
 }
 
@@ -47,7 +47,7 @@
 
 .tab-pane h2 {
   margin-bottom: 20px;
-  color: #2c3e50;
+  color: #000000;
   text-align: center;
 }
 
@@ -60,7 +60,7 @@
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: #333;
+  color: #000000;
 }
 
 /* AQUI: Garante que todos os inputs tenham o mesmo tamanho */
@@ -74,9 +74,9 @@
 }
 
 .form-group input:focus {
-  border-color: #3498db;
+  border-color: #bcd43c;
   outline: none;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .form-message {
@@ -93,17 +93,17 @@
 }
 
 .form-message.success {
-  background-color: #2ecc71;
+  background-color: #bcd43c;
 }
 
 .form-message.info {
-  background-color: #3498db;
+  background-color: #bcd43c;
 }
 
 .btn-primary {
   width: 100%;
   padding: 12px;
-  background-color: #3498db;
+  background-color: #bcd43c;
   color: white;
   border: none;
   border-radius: 4px;
@@ -113,5 +113,5 @@
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #bcd43c;
 }
