@@ -28,6 +28,13 @@ class ColaboradorController {
   static async create(req, res) {
     try {
       const colaborador = req.body;
+
+      // Verifica se já existe um colaborador com o mesmo CPF
+      const colaboradorExistente = await ColaboradorModel.getByCPF(colaborador.cpf);
+      if (colaboradorExistente) {
+        return res.status(400).json({ message: 'Já existe um colaborador com este CPF' });
+      }
+
       const id = await ColaboradorModel.create(colaborador);
       res.status(201).json({ id, message: 'Colaborador cadastrado com sucesso' });
     } catch (error) {

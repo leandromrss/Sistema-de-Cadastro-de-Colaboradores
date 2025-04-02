@@ -19,8 +19,23 @@ class ColaboradorModel {
     }
   }
 
+  static async getByCPF(cpf) {
+    try {
+      const [rows] = await db.query('SELECT * FROM colaboradores WHERE cpf = ?', [cpf]);
+      return rows.length > 0 ? rows[0] : null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async create(colaborador) {
     try {
+      // Verifica se o CPF já existe antes de inserir
+      const existente = await this.getByCPF(colaborador.cpf);
+      if (existente) {
+        throw new Error('Já existe um colaborador com este CPF.');
+      }
+
       const [result] = await db.query(
         'INSERT INTO colaboradores (nome, cpf, data_nascimento, setor, cargo, lider_direto, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         [

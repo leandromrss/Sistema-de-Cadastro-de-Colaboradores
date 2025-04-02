@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
   //SalvarColaborador
   function saveColaborador(event) {
     event.preventDefault();
-  
+    
     const colaboradorData = {
       nome: nome.value,
       cpf: cpf.value,
@@ -202,75 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
       telefone: telefone.value,
       email: email.value
     };
-  
-    // Verifica se é um novo cadastro ou uma edição
-    const isEditing = !!colaboradorId.value;
-  
-    // Validação de CPF duplicado (somente para novos cadastros)
-    if (!isEditing) {
-      fetch(`/api/colaboradores/check-cpf?cpf=${encodeURIComponent(cpf.value)}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.exists) {
-          alert('Erro: Já existe um colaborador cadastrado com este CPF.');
-        } else {
-          sendColaboradorData(colaboradorData, isEditing);
-        }
-      })
-      .catch(error => {
-        console.error('Erro ao verificar CPF:', error);
-        alert('Erro ao validar CPF. Tente novamente.');
-      });
-    } else {
-      sendColaboradorData(colaboradorData, isEditing);
-    }
-  }
-  
-  function sendColaboradorData(colaboradorData, isEditing) {
-    const url = isEditing 
-      ? `/api/colaboradores/${colaboradorId.value}`
-      : '/api/colaboradores';
-  
-    const method = isEditing ? 'PUT' : 'POST';
-  
-    fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(colaboradorData)
-    })
-    .then(response => {
-      if (response.status === 401) {
-        logout();
-        return null;
-      }
-      if (!response.ok) {
-        throw new Error('Erro ao salvar colaborador');
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data) {
-        alert(isEditing ? 'Colaborador atualizado com sucesso!' : 'Colaborador cadastrado com sucesso!');
-        resetForm();
-        loadColaboradores();
-        if (!formContainer.classList.contains('collapsed')) {
-          toggleFormCollapse();
-        }
-      }
-    })
-    .catch(error => {
-      console.error('Erro:', error);
-      alert('Erro ao salvar colaborador. Verifique os dados e tente novamente.');
-    });
-  }
-  ;
     
     const url = colaboradorId.value 
       ? `/api/colaboradores/${colaboradorId.value}` 
