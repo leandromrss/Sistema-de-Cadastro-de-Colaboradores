@@ -49,6 +49,60 @@
         </tbody>
       </table>
     </div>
+    <div id="painelFiltrosExportacao" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Filtros para Exportação</h3>
+          <button id="btnFecharFiltros" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="filtroNomeExport">Nome:</label>
+              <input type="text" id="filtroNomeExport" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="filtroCPFExport">CPF:</label>
+              <input type="text" id="filtroCPFExport" class="form-control">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="filtroSetorExport">Setor:</label>
+              <input type="text" id="filtroSetorExport" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="filtroCargoExport">Cargo:</label>
+              <input type="text" id="filtroCargoExport" class="form-control">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="filtroLiderExport">Líder Direto:</label>
+              <input type="text" id="filtroLiderExport" class="form-control">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="filtroDataInicioExport">Data Início:</label>
+              <input type="date" id="filtroDataInicioExport" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="filtroDataFimExport">Data Fim:</label>
+              <input type="date" id="filtroDataFimExport" class="form-control">
+            </div>
+          </div>
+          
+          <div class="form-buttons">
+            <button id="btnLimparFiltros" class="btn btn-secondary">Limpar Filtros</button>
+            <button id="btnExportar" class="btn btn-primary">Exportar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Formulário Minimizável -->
     <div class="form-container collapsed" id="formContainer">
@@ -118,7 +172,6 @@
       </div>
     </div>
   </div>
-
   <script src="js/script.js"></script>
 </body>
 </html>

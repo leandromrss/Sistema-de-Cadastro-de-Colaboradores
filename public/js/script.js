@@ -329,7 +329,22 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-document.getElementById('exportarCSV').addEventListener('click', async () => {
+// Funções de filtro e exportação
+function toggleFiltrosExportacao() {
+  const painelFiltros = document.getElementById('painelFiltrosExportacao');
+  if (painelFiltros) {
+    painelFiltros.classList.toggle('hidden');
+  }
+}
+
+function limparFiltrosExportacao() {
+  const filtros = document.querySelectorAll('#painelFiltrosExportacao input, #painelFiltrosExportacao select');
+  filtros.forEach(filtro => {
+    filtro.value = '';
+  });
+}
+
+async function exportarColaboradoresFiltrados() {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -338,29 +353,23 @@ document.getElementById('exportarCSV').addEventListener('click', async () => {
     }
 
     // Obter valores dos filtros
-    const nome = document.getElementById('filtroNome')?.value.trim() || '';
-    const cpf = document.getElementById('filtroCPF')?.value.trim() || '';
-    const setor = document.getElementById('filtroSetor')?.value.trim() || '';
-    const cargo = document.getElementById('filtroCargo')?.value.trim() || '';
-    const lider_direto = document.getElementById('filtroLider')?.value.trim() || '';
-    const dataInicio = document.getElementById('filtroDataInicio')?.value.trim() || '';
-    const dataFim = document.getElementById('filtroDataFim')?.value.trim() || '';
+    const nome = document.getElementById('filtroNomeExport')?.value.trim() || '';
+    const setor = document.getElementById('filtroSetorExport')?.value.trim() || '';
+    const cargo = document.getElementById('filtroCargoExport')?.value.trim() || '';
+    const lider_direto = document.getElementById('filtroLiderExport')?.value.trim() || '';
 
     // Construir os parâmetros de consulta
     const queryParams = new URLSearchParams();
     if (nome) queryParams.append('nome', nome);
-    if (cpf) queryParams.append('cpf', cpf);
     if (setor) queryParams.append('setor', setor);
     if (cargo) queryParams.append('cargo', cargo);
     if (lider_direto) queryParams.append('lider_direto', lider_direto);
-    if (dataInicio) queryParams.append('dataInicio', dataInicio);
-    if (dataFim) queryParams.append('dataFim', dataFim);
     
     // Construir URL com parâmetros apenas se houver algum
     const queryString = queryParams.toString();
     const url = `/api/colaboradores/export${queryString ? '?' + queryString : ''}`;
     
-    console.log("Tentando exportar com URL:", url); // Depuração
+    console.log("Exportando colaboradores filtrados:", url);
     
     // Fazer a requisição
     const response = await fetch(url, {
@@ -368,14 +377,10 @@ document.getElementById('exportarCSV').addEventListener('click', async () => {
         'Authorization': `Bearer ${token}`
       }
     });
-
-    console.log("Status da resposta:", response.status); // Depuração
     
     if (!response.ok) {
-      // Tentar obter detalhes do erro
       try {
         const errorData = await response.json();
-        console.error("Detalhes do erro:", errorData);
         throw new Error(errorData.message || `Erro ${response.status}`);
       } catch (jsonError) {
         throw new Error(`Erro ${response.status}: Não foi possível obter o relatório`);
@@ -384,11 +389,9 @@ document.getElementById('exportarCSV').addEventListener('click', async () => {
 
     // Verificar o tipo de conteúdo da resposta
     const contentType = response.headers.get('content-type');
-    console.log("Tipo de conteúdo:", contentType); // Depuração
     
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
-      console.log("Resposta JSON:", data); // Depuração
       if (data.message) {
         alert(data.message);
         return;
@@ -403,9 +406,138 @@ document.getElementById('exportarCSV').addEventListener('click', async () => {
     link.click();
     document.body.removeChild(link);
 
+    // Opcional: fechar o painel de filtros após a exportação
+    document.getElementById('painelFiltrosExportacao').classList.add('hidden');
+
   } catch (error) {
     console.error('Erro ao exportar CSV:', error);
     alert('Erro ao exportar o relatório: ' + error.message);
+  }
+}
+
+// Evento principal de carregamento do documento
+document.addEventListener('DOMContentLoaded', function() {
+  // Verificar autenticação
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login.html';
+    return;
+  }
+  
+  // Exibir nome do usuário
+  const userName = localStorage.getItem('userName');
+  const userNameDisplay = document.getElementById('userNameDisplay');
+  if (userName) {
+    userNameDisplay.textContent = `Olá, ${userName}`;
+  }
+  
+  // Elementos do DOM
+  const colaboradorForm = document.getElementById('colaboradorForm');
+  const formTitle = document.getElementById('formTitle');
+  const formContainer = document.getElementById('formContainer');
+  const collapseFormButton = document.getElementById('collapseFormButton');
+  const newColaboradorButton = document.getElementById('newColaboradorButton');
+  const colaboradorId = document.getElementById('colaboradorId');
+  const nome = document.getElementById('nome');
+  const cpf = document.getElementById('cpf');
+  const dataNascimento = document.getElementById('data_nascimento');
+  const setor = document.getElementById('setor');
+  const cargo = document.getElementById('cargo');
+  const liderDireto = document.getElementById('lider_direto');
+  const telefone = document.getElementById('telefone');
+  const email = document.getElementById('email');
+  const saveButton = document.getElementById('saveButton');
+  const cancelButton = document.getElementById('cancelButton');
+  const searchInput = document.getElementById('searchInput');
+  const searchButton = document.getElementById('searchButton');
+  const colaboradoresTableBody = document.getElementById('colaboradoresTableBody');
+  const logoutButton = document.getElementById('logoutButton');
+  const exportarCSV = document.getElementById('exportarCSV');
+  
+  // Event Listeners
+  colaboradorForm.addEventListener('submit', saveColaborador);
+  cancelButton.addEventListener('click', resetForm);
+  searchButton.addEventListener('click', searchColaboradores);
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      searchColaboradores();
+    }
+  });
+  
+  // Controle de exibição do formulário
+  collapseFormButton.addEventListener('click', toggleFormCollapse);
+  newColaboradorButton.addEventListener('click', showForm);
+  
+  // Logout
+  logoutButton.addEventListener('click', logout);
+  
+  // Botão de exportar CSV - IMPORTANTE: Esta é a correção principal
+  exportarCSV.addEventListener('click', toggleFiltrosExportacao);
+  
+  // Botões do painel de filtro
+  const btnExportar = document.getElementById('btnExportar');
+  if (btnExportar) {
+    btnExportar.addEventListener('click', exportarColaboradoresFiltrados);
+  }
+  
+  const btnLimparFiltros = document.getElementById('btnLimparFiltros');
+  if (btnLimparFiltros) {
+    btnLimparFiltros.addEventListener('click', limparFiltrosExportacao);
+  }
+  
+  const btnFecharFiltros = document.getElementById('btnFecharFiltros');
+  if (btnFecharFiltros) {
+    btnFecharFiltros.addEventListener('click', function() {
+      document.getElementById('painelFiltrosExportacao').classList.add('hidden');
+    });
+  }
+  
+  // Carregar todos os colaboradores ao iniciar
+  loadColaboradores();
+  
+  // Funções existentes que permanecem dentro do escopo do document.addEventListener
+  function loadColaboradores() {
+    // Código existente...
+  }
+  
+  function searchColaboradores() {
+    // Código existente...
+  }
+  
+  function renderColaboradoresTable(colaboradores) {
+    // Código existente...
+  }
+  
+  function formatDate(dateString) {
+    // Código existente...
+  }
+  
+  function toggleFormCollapse() {
+    // Código existente...
+  }
+  
+  function showForm() {
+    // Código existente...
+  }
+  
+  function saveColaborador(event) {
+    // Código existente...
+  }
+  
+  function editColaborador(id) {
+    // Código existente...
+  }
+  
+  function deleteColaborador(id) {
+    // Código existente...
+  }
+  
+  function resetForm() {
+    // Código existente...
+  }
+  
+  function logout() {
+    // Código existente...
   }
 });
 

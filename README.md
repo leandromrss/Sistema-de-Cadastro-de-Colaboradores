@@ -17,6 +17,7 @@ Sistema web para cadastro e gerenciamento de colaboradores de uma empresa.
 - Edição de dados dos colaboradores
 - Exclusão de colaboradores
 - Exportação de relatório .csv
+- Adicionado filtro para exportação
 
 
 ## Tecnologias Utilizadas
