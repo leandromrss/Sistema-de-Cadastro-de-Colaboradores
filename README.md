@@ -12,8 +12,9 @@ Sistema web para cadastro e gerenciamento de colaboradores de uma empresa.
   - Telefone
   - Área (seleção de área específica)
   - Cargo
-- Listagem de todos os colaboradores
+- Listagem de todos os colaboradores onde se exibem as informações essenciais
 - Busca por colaboradores
+- Visualização de todos os dados do colaborador
 - Edição de dados dos colaboradores
 - Exclusão de colaboradores
 - Exportação de relatório .csv
@@ -77,7 +78,7 @@ gtsys/
 
 3. Configure o arquivo `.env` com suas variáveis de ambiente:
    ```
-   PORT=3000
+   PORT=3008
    DB_HOST=localhost
    DB_USER=seu_usuario_mysql
    DB_PASSWORD=sua_senha_mysql

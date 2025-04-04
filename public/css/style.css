@@ -92,16 +92,41 @@ button:hover {
 /* Estilos da tabela */
 .table-container {
   background-color: white;
-  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
-.table-container h2 {
-  margin-bottom: 20px;
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.table-header h2 {
   color: #000000;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.table-content {
+  padding: 0 20px 20px 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Estado minimizado da tabela */
+.table-container.collapsed .table-content {
+  display: none;
+}
+
+.table-container.collapsed {
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
 table {
@@ -113,6 +138,13 @@ th, td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+/* Ajuste específico para a coluna de ações */
+td:last-child {
+  padding-top: 14px;
+  padding-bottom: 14px;
 }
 
 th {
@@ -124,9 +156,32 @@ tr:hover {
   background-color: #f9f9f9;
 }
 
+/* Botões de ação - Versão ajustada */
 .action-buttons {
   display: flex;
-  gap: 5px;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  top: 2px;
+}
+
+.action-btn i {
+  font-size: 14px;
 }
 
 .edit-btn {
@@ -152,14 +207,13 @@ tr:hover {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   overflow: hidden;
-  transition: max-height 0.3s ease-in-out;
 }
 
 .form-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 15px 20px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #eee;
 }
@@ -167,6 +221,8 @@ tr:hover {
 .form-header h2 {
   color: #000000;
   margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .collapse-button {
@@ -180,6 +236,8 @@ tr:hover {
   justify-content: center;
   border-radius: 50%;
   cursor: pointer;
+  border: none;
+  margin-left: 10px;
 }
 
 .collapse-button:hover {
@@ -188,6 +246,8 @@ tr:hover {
 
 .form-content {
   padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 /* Estado minimizado do formulário */
@@ -202,6 +262,7 @@ tr:hover {
 .form-container.collapsed {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
+
 #exportarCSV {
   background-color: #bcd43c;
   color: white;
@@ -216,7 +277,6 @@ tr:hover {
 #exportarCSV:hover {
   background-color: #bcd43c;
 }
-
 
 /* Layout de formulário em colunas */
 .form-row {
@@ -337,8 +397,41 @@ input[type="date"] {
 .hidden {
   display: none;
 }
+.view-btn {
+  background-color: #3498db;
+}
 
+.view-btn:hover {
+  background-color: #2980b9;
+}
 
+/* Ajuste para os botões de ação */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  top: 2px;
+}
+
+.action-btn i {
+  font-size: 14px;
+}
 /* Responsividade */
 @media (max-width: 768px) {
   .header-content {
@@ -368,4 +461,5 @@ input[type="date"] {
   .table-container {
     overflow-x: auto;
   }
+
 }

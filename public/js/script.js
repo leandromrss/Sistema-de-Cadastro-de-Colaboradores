@@ -5,6 +5,26 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = '/login.html';
     return;
   }
+  const tableContainer = document.querySelector('.table-container');
+  const collapseTableButton = document.getElementById('collapseTableButton');
+  
+  if (collapseTableButton) {
+    collapseTableButton.addEventListener('click', toggleTableCollapse);
+  }
+  
+  function toggleTableCollapse() {
+    tableContainer.classList.toggle('collapsed');
+    
+    // Atualizar o ícone do botão
+    const icon = collapseTableButton.querySelector('i');
+    if (icon) {
+      if (tableContainer.classList.contains('collapsed')) {
+        icon.className = 'fas fa-plus';
+      } else {
+        icon.className = 'fas fa-minus';
+      }
+    }
+  }
   // Exibir nome do usuário
   const userName = localStorage.getItem('userName');
   const userNameDisplay = document.getElementById('userNameDisplay');
@@ -32,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const searchButton = document.getElementById('searchButton');
   const colaboradoresTableBody = document.getElementById('colaboradoresTableBody');
   const logoutButton = document.getElementById('logoutButton');
+  
   
   // Formulário já começa collapsed no HTML, não precisa adicionar a classe
   
@@ -116,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (colaboradores.length === 0) {
       const row = document.createElement('tr');
-      row.innerHTML = '<td colspan="9" style="text-align: center;">Nenhum colaborador encontrado</td>';
+      row.innerHTML = '<td colspan="8" style="text-align: center;">Nenhum colaborador encontrado</td>';
       colaboradoresTableBody.appendChild(row);
       return;
     }
@@ -127,29 +148,103 @@ document.addEventListener('DOMContentLoaded', function() {
         <td>${colaborador.nome}</td>
         <td>${colaborador.cpf}</td>
         <td>${formatDate(colaborador.data_nascimento)}</td>
-        <td>${colaborador.setor}</td>
         <td>${colaborador.cargo}</td>
-        <td>${colaborador.lider_direto}</td>
         <td>${colaborador.telefone}</td>
         <td>${colaborador.email}</td>
         <td class="action-buttons">
-          <button class="edit-btn" data-id="${colaborador.id}">
+          <button class="view-btn" data-id="${colaborador.id}" title="Visualizar">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="edit-btn" data-id="${colaborador.id}" title="Editar">
             <i class="fas fa-edit"></i>
           </button>
-          <button class="delete-btn" data-id="${colaborador.id}">
+          <button class="delete-btn" data-id="${colaborador.id}" title="Excluir">
             <i class="fas fa-trash"></i>
           </button>
         </td>
       `;
       
-      // Adicionar event listeners para os botões de editar e excluir
+      // Adicionar event listeners para os botões
+      row.querySelector('.view-btn').addEventListener('click', () => viewColaborador(colaborador.id));
       row.querySelector('.edit-btn').addEventListener('click', () => editColaborador(colaborador.id));
       row.querySelector('.delete-btn').addEventListener('click', () => deleteColaborador(colaborador.id));
       
       colaboradoresTableBody.appendChild(row);
     });
   }
-  
+
+  function viewColaborador(id) {
+    fetch(`/api/colaboradores/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        if (response.status === 401) {
+          logout();
+          return null;
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data) {
+          // Preencher modal com todos os dados
+          const modalBody = document.getElementById('viewModalBody');
+          modalBody.innerHTML = `
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome Completo:</label>
+                <p>${data.nome || 'N/A'}</p>
+              </div>
+              <div class="form-group">
+                <label>CPF:</label>
+                <p>${data.cpf || 'N/A'}</p>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>Data de Nascimento:</label>
+                <p>${formatDate(data.data_nascimento) || 'N/A'}</p>
+              </div>
+              <div class="form-group">
+                <label>Telefone:</label>
+                <p>${data.telefone || 'N/A'}</p>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>E-mail:</label>
+                <p>${data.email || 'N/A'}</p>
+              </div>
+              <div class="form-group">
+                <label>Setor:</label>
+                <p>${data.setor || 'N/A'}</p>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>Cargo:</label>
+                <p>${data.cargo || 'N/A'}</p>
+              </div>
+              <div class="form-group">
+                <label>Líder Direto:</label>
+                <p>${data.lider_direto || 'N/A'}</p>
+              </div>
+            </div>
+          `;
+          
+          // Mostrar modal
+          document.getElementById('viewModal').classList.remove('hidden');
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao carregar dados do colaborador:', error);
+        alert('Erro ao carregar dados do colaborador.');
+      });
+  }
   // Função auxiliar para formatar data
   function formatDate(dateString) {
     if (!dateString) return '';
@@ -327,6 +422,12 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.removeItem('userName');
     window.location.href = '/login.html';
   }
+  const btnFecharViewModal = document.getElementById('btnFecharViewModal');
+if (btnFecharViewModal) {
+  btnFecharViewModal.addEventListener('click', function() {
+    document.getElementById('viewModal').classList.add('hidden');
+  });
+}
 });
 
 // Funções de filtro e exportação

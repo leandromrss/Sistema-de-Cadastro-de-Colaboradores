@@ -26,25 +26,42 @@
         </button>
       </div>
     </header>
+    
+    <!-- Modal de Visualização -->
+<div id="viewModal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Detalhes do Colaborador</h3>
+      <button id="btnFecharViewModal" class="close-btn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="viewModalBody">
+      <!-- Conteúdo será preenchido via JavaScript -->
+    </div>
+  </div>
+</div>
 
     <!-- Tabela de Colaboradores vem primeiro agora -->
     <div class="table-container">
-      <h2>Lista de Colaboradores</h2>
+      <div class="table-header">
+        <h2>Lista de Colaboradores</h2>
+        <button id="collapseTableButton" class="collapse-button">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+      <div class="table-content">
       <table id="colaboradoresTable">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>Data de Nascimento</th>
-            <th>Setor</th>
-            <th>Cargo</th>
-            <th>Líder Direto</th>
-            <th>Telefone</th>
-            <th>E-mail</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="colaboradoresTableBody">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Data de Nascimento</th>
+              <th>Cargo</th>
+              <th>Telefone</th>
+              <th>E-mail</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="colaboradoresTableBody">
           <!-- Dados serão inseridos aqui via JavaScript -->
         </tbody>
       </table>

@@ -5,7 +5,7 @@ const colaboradorRoutes = require('./routes/colaboradorRoutes');
 const authRoutes = require('./Routes/authRoutes'); // Importe as novas rotas
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Middleware para processar JSON
 app.use(express.json());
