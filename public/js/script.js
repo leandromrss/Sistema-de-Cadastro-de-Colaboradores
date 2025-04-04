@@ -34,8 +34,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Elementos do DOM
   const colaboradorForm = document.getElementById('colaboradorForm');
   const formTitle = document.getElementById('formTitle');
-  const formContainer = document.getElementById('formContainer'); // Usando o ID correto
-  const collapseFormButton = document.getElementById('collapseFormButton'); // Usando o ID correto
+  const formContainer = document.getElementById('formContainer');
+  const formHeader = document.querySelector('.form-header');
+  const formContent = document.querySelector('.form-content');
+  const formToggleIcon = document.querySelector('.form-header .toggle-icon');
+  const collapseFormButton = document.getElementById('collapseFormButton');
   const newColaboradorButton = document.getElementById('newColaboradorButton');
   const colaboradorId = document.getElementById('colaboradorId');
   const nome = document.getElementById('nome');
@@ -70,7 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Controle de exibição do formulário
-  collapseFormButton.addEventListener('click', toggleFormCollapse);
+  if (collapseFormButton) {
+    collapseFormButton.removeEventListener('click', toggleFormCollapse);
+  }
   newColaboradorButton.addEventListener('click', showForm);
   
   // Logout
@@ -132,6 +137,20 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
   
+  // Função para formatar CPF
+  function formatarCPF(cpf) {
+    if (!cpf) return '';
+    
+    // Remove caracteres não numéricos
+    cpf = cpf.replace(/\D/g, '');
+    
+    // Verifica se tem 11 dígitos
+    if (cpf.length !== 11) return cpf;
+    
+    // Formata o CPF: XXX.XXX.XXX-XX
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
+  
   function renderColaboradoresTable(colaboradores) {
     colaboradoresTableBody.innerHTML = '';
     
@@ -146,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const row = document.createElement('tr');
       row.innerHTML = `
         <td>${colaborador.nome}</td>
-        <td>${colaborador.cpf}</td>
+        <td>${formatarCPF(colaborador.cpf)}</td>
         <td>${formatDate(colaborador.data_nascimento)}</td>
         <td>${colaborador.cargo}</td>
         <td>${colaborador.telefone}</td>
@@ -198,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
               <div class="form-group">
                 <label>CPF:</label>
-                <p>${data.cpf || 'N/A'}</p>
+                <p>${formatarCPF(data.cpf) || 'N/A'}</p>
               </div>
             </div>
             
@@ -260,16 +279,20 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function toggleFormCollapse() {
+    if (!formContainer || !formContent || !formToggleIcon) return;
+
     formContainer.classList.toggle('collapsed');
     
-    // Atualizar o ícone do botão
-    const icon = collapseFormButton.querySelector('i');
-    if (icon) {
-      if (formContainer.classList.contains('collapsed')) {
-        icon.className = 'fas fa-plus';
-      } else {
-        icon.className = 'fas fa-minus';
-      }
+    if (formContainer.classList.contains('collapsed')) {
+      formContent.style.maxHeight = '0';
+      formContent.style.opacity = '0';
+      formContent.style.overflow = 'hidden';
+      formToggleIcon.style.transform = 'rotate(180deg)';
+    } else {
+      formContent.style.maxHeight = formContent.scrollHeight + 'px';
+      formContent.style.opacity = '1';
+      formContent.style.overflow = 'visible';
+      formToggleIcon.style.transform = 'rotate(0)';
     }
   }
   
@@ -428,6 +451,11 @@ if (btnFecharViewModal) {
     document.getElementById('viewModal').classList.add('hidden');
   });
 }
+
+  // Adicionar event listener ao header do formulário
+  if (formHeader) {
+    formHeader.addEventListener('click', toggleFormCollapse);
+  }
 });
 
 // Funções de filtro e exportação
@@ -517,128 +545,193 @@ async function exportarColaboradoresFiltrados() {
 }
 
 // Evento principal de carregamento do documento
-document.addEventListener('DOMContentLoaded', function() {
-  // Verificar autenticação
+document.addEventListener('DOMContentLoaded', () => {
+  // Verificar autenticação ao carregar a página
   const token = localStorage.getItem('token');
   if (!token) {
     window.location.href = '/login.html';
     return;
   }
-  
-  // Exibir nome do usuário
+
+  // Carregar nome do usuário
   const userName = localStorage.getItem('userName');
-  const userNameDisplay = document.getElementById('userNameDisplay');
   if (userName) {
-    userNameDisplay.textContent = `Olá, ${userName}`;
+    document.getElementById('userNameDisplay').textContent = `Olá, ${userName}`;
   }
-  
-  // Elementos do DOM
-  const colaboradorForm = document.getElementById('colaboradorForm');
-  const formTitle = document.getElementById('formTitle');
-  const formContainer = document.getElementById('formContainer');
-  const collapseFormButton = document.getElementById('collapseFormButton');
-  const newColaboradorButton = document.getElementById('newColaboradorButton');
-  const colaboradorId = document.getElementById('colaboradorId');
-  const nome = document.getElementById('nome');
-  const cpf = document.getElementById('cpf');
-  const dataNascimento = document.getElementById('data_nascimento');
-  const setor = document.getElementById('setor');
-  const cargo = document.getElementById('cargo');
-  const liderDireto = document.getElementById('lider_direto');
-  const telefone = document.getElementById('telefone');
-  const email = document.getElementById('email');
-  const saveButton = document.getElementById('saveButton');
-  const cancelButton = document.getElementById('cancelButton');
-  const searchInput = document.getElementById('searchInput');
-  const searchButton = document.getElementById('searchButton');
-  const colaboradoresTableBody = document.getElementById('colaboradoresTableBody');
-  const logoutButton = document.getElementById('logoutButton');
-  const exportarCSV = document.getElementById('exportarCSV');
-  
-  // Event Listeners
-  colaboradorForm.addEventListener('submit', saveColaborador);
-  cancelButton.addEventListener('click', resetForm);
-  searchButton.addEventListener('click', searchColaboradores);
-  searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      searchColaboradores();
-    }
-  });
-  
-  // Controle de exibição do formulário
-  collapseFormButton.addEventListener('click', toggleFormCollapse);
-  newColaboradorButton.addEventListener('click', showForm);
-  
-  // Logout
-  logoutButton.addEventListener('click', logout);
-  
-  // Botão de exportar CSV - IMPORTANTE: Esta é a correção principal
-  exportarCSV.addEventListener('click', toggleFiltrosExportacao);
-  
-  // Botões do painel de filtro
-  const btnExportar = document.getElementById('btnExportar');
-  if (btnExportar) {
-    btnExportar.addEventListener('click', exportarColaboradoresFiltrados);
+
+  // Toggle Sidebar
+  const toggleSidebarBtn = document.querySelector('.toggle-sidebar');
+  if (toggleSidebarBtn) {
+    toggleSidebarBtn.addEventListener('click', toggleSidebar);
   }
-  
-  const btnLimparFiltros = document.getElementById('btnLimparFiltros');
-  if (btnLimparFiltros) {
-    btnLimparFiltros.addEventListener('click', limparFiltrosExportacao);
-  }
-  
-  const btnFecharFiltros = document.getElementById('btnFecharFiltros');
-  if (btnFecharFiltros) {
-    btnFecharFiltros.addEventListener('click', function() {
-      document.getElementById('painelFiltrosExportacao').classList.add('hidden');
+
+  // Toggle Table
+  const tableHeader = document.querySelector('.table-header');
+  if (tableHeader) {
+    tableHeader.addEventListener('click', () => {
+      const tableContainer = document.querySelector('.table-container');
+      tableContainer.classList.toggle('collapsed');
     });
   }
-  
-  // Carregar todos os colaboradores ao iniciar
-  loadColaboradores();
-  
-  // Funções existentes que permanecem dentro do escopo do document.addEventListener
-  function loadColaboradores() {
-    // Código existente...
+
+  // Navegação da Sidebar
+  document.querySelectorAll('.sidebar-nav a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const section = e.currentTarget.getAttribute('data-section');
+      switchSection(section);
+    });
+  });
+
+  // Botão de exportar CSV
+  const exportarCSVBtn = document.getElementById('exportarCSV');
+  if (exportarCSVBtn) {
+    exportarCSVBtn.addEventListener('click', exportarRelatorio);
   }
-  
-  function searchColaboradores() {
-    // Código existente...
+
+  // Botão de limpar filtros
+  const btnLimparFiltros = document.getElementById('btnLimparFiltros');
+  if (btnLimparFiltros) {
+    btnLimparFiltros.addEventListener('click', () => {
+      // Limpar todos os campos de filtro
+      const filtros = [
+        'filtroNomeExport',
+        'filtroCPFExport',
+        'filtroSetorExport',
+        'filtroCargoExport',
+        'filtroLiderExport'
+      ];
+      
+      filtros.forEach(filtroId => {
+        const elemento = document.getElementById(filtroId);
+        if (elemento) {
+          elemento.value = '';
+        }
+      });
+    });
   }
-  
-  function renderColaboradoresTable(colaboradores) {
-    // Código existente...
+
+  // Logout
+  const logoutButton = document.getElementById('logoutButton');
+  if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userName');
+      window.location.href = '/login.html';
+    });
   }
-  
-  function formatDate(dateString) {
-    // Código existente...
-  }
-  
-  function toggleFormCollapse() {
-    // Código existente...
-  }
-  
-  function showForm() {
-    // Código existente...
-  }
-  
-  function saveColaborador(event) {
-    // Código existente...
-  }
-  
-  function editColaborador(id) {
-    // Código existente...
-  }
-  
-  function deleteColaborador(id) {
-    // Código existente...
-  }
-  
-  function resetForm() {
-    // Código existente...
-  }
-  
-  function logout() {
-    // Código existente...
-  }
+
+  // Carregar colaboradores ao iniciar
+  carregarColaboradores();
 });
 
+// Função para exportar relatório
+async function exportarRelatorio() {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login.html';
+      return;
+    }
+
+    // Obter valores dos filtros
+    const filtros = {
+      nome: document.getElementById('filtroNomeExport')?.value || '',
+      cpf: document.getElementById('filtroCPFExport')?.value || '',
+      setor: document.getElementById('filtroSetorExport')?.value || '',
+      cargo: document.getElementById('filtroCargoExport')?.value || '',
+      lider_direto: document.getElementById('filtroLiderExport')?.value || ''
+    };
+
+    // Construir query string com os filtros não vazios
+    const queryParams = new URLSearchParams();
+    Object.entries(filtros).forEach(([key, value]) => {
+      if (value.trim()) {
+        queryParams.append(key, value.trim());
+      }
+    });
+
+    const url = `/api/colaboradores/export${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+    
+    console.log("Tentando exportar relatório. URL:", url);
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userName');
+      window.location.href = '/login.html';
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Erro ao exportar: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const url_download = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    
+    // Gerar nome do arquivo com data atual
+    const dataAtual = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+    const nomeArquivo = `relatorio-colaboradores-${dataAtual}.csv`;
+    
+    a.href = url_download;
+    a.download = nomeArquivo;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url_download);
+    document.body.removeChild(a);
+
+    alert('Relatório exportado com sucesso!');
+  } catch (error) {
+    console.error('Erro ao exportar relatório:', error);
+    alert('Erro ao exportar relatório. Por favor, tente novamente.');
+  }
+}
+
+// Função para alternar a barra lateral
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const mainContent = document.querySelector('.main-content');
+  
+  sidebar.classList.toggle('collapsed');
+  mainContent.classList.toggle('expanded');
+}
+
+// Função para trocar entre seções
+function switchSection(sectionId) {
+  // Remover classe active de todas as seções
+  document.querySelectorAll('.section').forEach(section => {
+    section.classList.remove('active');
+  });
+  
+  // Adicionar classe active na seção selecionada
+  const targetSection = document.getElementById(sectionId + 'Section');
+  if (targetSection) {
+    targetSection.classList.add('active');
+  }
+  
+  // Atualizar links ativos na sidebar
+  document.querySelectorAll('.sidebar-nav a').forEach(link => {
+    link.classList.remove('active');
+  });
+  
+  const activeLink = document.querySelector(`.sidebar-nav a[data-section="${sectionId}"]`);
+  if (activeLink) {
+    activeLink.classList.add('active');
+  }
+  
+  // Se for a seção de relatórios, garantir que os filtros estejam visíveis
+  if (sectionId === 'relatorios') {
+    const filtersContainer = document.querySelector('.filters-container');
+    if (filtersContainer) {
+      filtersContainer.style.display = 'block';
+    }
+  }
+}

@@ -4,71 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - GTSys</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
   <div class="login-container">
-    <div class="form-box">
-      <div class="tab-header">
-        <div class="tab active" data-tab="login">Login</div>
-        <div class="tab" data-tab="register">Cadastre-se</div>
-      </div>
-      
-      <div class="tab-content">
-        <!-- Formulário de Login -->
-        <div class="tab-pane active" id="login-form">
-          <h2>GTSys</h2>
-          <form id="loginForm">
-            <div class="form-group">
-              <label for="login-email">E-mail:</label>
-              <input type="email" id="login-email" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="login-senha">Senha:</label>
-              <input type="password" id="login-senha" required>
-            </div>
-            
-            <div class="form-message" id="login-message"></div>
-            
-            <button type="submit" class="btn-primary">Entrar</button>
-          </form>
-        </div>
-        
-        <!-- Formulário de Cadastro -->
-        <div class="tab-pane" id="register-form">
-          <h2>Novo Usuário</h2>
-          <form id="registerForm">
-            <div class="form-group">
-              <label for="register-nome">Nome:</label>
-              <input type="text" id="register-nome" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="register-email">E-mail:</label>
-              <input type="email" id="register-email" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="register-senha">Senha:</label>
-              <input type="password" id="register-senha" required minlength="6">
-            </div>
-            
-            <div class="form-group">
-              <label for="register-confirmar-senha">Confirmar Senha:</label>
-              <input type="password" id="register-confirmar-senha" required minlength="6">
-            </div>
-            
-            <div class="form-message" id="register-message"></div>
-            
-            <button type="submit" class="btn-primary">Cadastrar</button>
-          </form>
-        </div>
-      </div>
+    <div class="login-header">
+      <h1>GTSys</h1>
     </div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required placeholder="Digite seu e-mail">
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" required placeholder="Digite sua senha">
+      </div>
+      <div id="errorMessage" class="error-message"></div>
+      <button type="submit" class="btn-login">
+        <i class="fas fa-sign-in-alt"></i>
+        Entrar
+      </button>
+    </form>
   </div>
-
   <script src="js/login.js"></script>
 </body>
 </html>

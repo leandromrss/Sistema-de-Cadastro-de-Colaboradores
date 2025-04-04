@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const registerForm = document.getElementById('registerForm');
   const loginMessage = document.getElementById('login-message');
   const registerMessage = document.getElementById('register-message');
+  const errorMessage = document.getElementById('errorMessage');
   
   // Alternar entre as abas
   tabs.forEach(tab => {
@@ -30,62 +31,47 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Manipular o envio do formulário de login
-  loginForm.addEventListener('submit', function(e) {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const email = document.getElementById('login-email').value;
-    const senha = document.getElementById('login-senha').value;
-    
-    // Validação básica
-    if (!email || !senha) {
-      showMessage(loginMessage, 'Preencha todos os campos', 'error');
-      return;
-    }
-    
-    // Exibir mensagem de carregamento
-    showMessage(loginMessage, 'Conectando ao servidor...', 'info');
-    
-    // Verificar a URL da API - Ajuste para seu backend real
-    const loginUrl = '/api/auth/login';
-    console.log('Tentando conectar em: ' + loginUrl);
-    
-    // Enviar requisição para a API
-    fetch(loginUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, senha })
-    })
-    .then(response => {
-      console.log('Status da resposta:', response.status);
-      return response.json().catch(error => {
-        console.error('Erro ao processar JSON:', error);
-        throw new Error('Formato de resposta inválido');
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('password').value;
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, senha })
       });
-    })
-    .then(data => {
-      if (data.message && data.token) {
+
+      const data = await response.json();
+
+      if (response.ok && data.token) {
         // Login bem-sucedido
-        showMessage(loginMessage, 'Login realizado com sucesso!', 'success');
-        
-        // Salvar token no localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('userName', data.usuario.nome);
-        
-        // Redirecionar para a página principal
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1000);
+        window.location.href = '/index.html';
       } else {
-        // Erro no login
-        showMessage(loginMessage, data.message || 'Erro ao fazer login', 'error');
+        // Exibir mensagem de erro
+        errorMessage.textContent = data.message || 'Erro ao fazer login. Verifique suas credenciais.';
+        errorMessage.classList.add('visible');
       }
-    })
-    .catch(error => {
-      showMessage(loginMessage, 'Erro ao conectar com o servidor: ' + error.message, 'error');
-      console.error('Erro detalhado:', error);
-    });
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      errorMessage.textContent = 'Erro ao conectar com o servidor. Tente novamente mais tarde.';
+      errorMessage.classList.add('visible');
+    }
+  });
+  
+  // Limpar mensagem de erro quando o usuário começar a digitar
+  document.getElementById('email').addEventListener('input', () => {
+    errorMessage.classList.remove('visible');
+  });
+
+  document.getElementById('password').addEventListener('input', () => {
+    errorMessage.classList.remove('visible');
   });
   
   // Manipular o envio do formulário de registro

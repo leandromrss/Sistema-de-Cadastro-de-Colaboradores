@@ -8,10 +8,41 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div class="container">
+  <!-- Barra Lateral -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>GTSys</h2>
+      <button class="toggle-sidebar" title="Alternar menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" data-section="home" class="active">
+        <i class="fas fa-home"></i>
+        <span>Início</span>
+      </a>
+      <a href="#" data-section="colaboradores">
+        <i class="fas fa-users"></i>
+        <span>Colaboradores</span>
+      </a>
+      <a href="#" data-section="relatorios">
+        <i class="fas fa-chart-bar"></i>
+        <span>Relatórios</span>
+      </a>
+      <a href="#" data-section="usuarios">
+        <i class="fas fa-user-cog"></i>
+        <span>Usuários</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <div class="main-content">
     <header>
       <div class="header-content">
-        <h1>GTSys</h1>
+        <button id="menuButton" class="menu-button">
+          <i class="fas fa-bars"></i>
+        </button>
         <div class="user-info">
           <span id="userNameDisplay">Usuário não autenticado</span>
           <button id="logoutButton" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
@@ -21,155 +52,163 @@
         <input type="text" id="searchInput" placeholder="Pesquisar colaboradores...">
         <button id="searchButton">Buscar</button>
         <button id="newColaboradorButton" class="btn-success">
-        <i class="fas fa-plus"></i> Novo Colaborador
-        <button id="exportarCSV">Exportar Relatório</button>
+          <i class="fas fa-plus"></i> Novo Colaborador
         </button>
       </div>
     </header>
-    
-    <!-- Modal de Visualização -->
-<div id="viewModal" class="modal-overlay hidden">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Detalhes do Colaborador</h3>
-      <button id="btnFecharViewModal" class="close-btn"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="modal-body" id="viewModalBody">
-      <!-- Conteúdo será preenchido via JavaScript -->
-    </div>
-  </div>
-</div>
 
-    <!-- Tabela de Colaboradores vem primeiro agora -->
-    <div class="table-container">
-      <div class="table-header">
-        <h2>Lista de Colaboradores</h2>
-        <button id="collapseTableButton" class="collapse-button">
-          <i class="fas fa-minus"></i>
-        </button>
+    <!-- Seção de Colaboradores -->
+    <div id="colaboradoresSection" class="section active">
+      <!-- Tabela de Colaboradores -->
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Lista de Colaboradores</h2>
+          <i class="fas fa-chevron-up toggle-icon"></i>
+        </div>
+        <div class="table-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Data Nasc.</th>
+                <th>Cargo</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="colaboradoresTableBody">
+              <!-- Dados serão inseridos via JavaScript -->
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="table-content">
-      <table id="colaboradoresTable">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>CPF</th>
-              <th>Data de Nascimento</th>
-              <th>Cargo</th>
-              <th>Telefone</th>
-              <th>E-mail</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="colaboradoresTableBody">
-          <!-- Dados serão inseridos aqui via JavaScript -->
-        </tbody>
-      </table>
+
+      <!-- Formulário de Cadastro -->
+      <div class="form-container" id="formContainer">
+        <div class="form-header">
+          <h2 id="formTitle">Cadastro de Colaborador</h2>
+          <i class="fas fa-chevron-up toggle-icon"></i>
+        </div>
+        <div class="form-content">
+          <form id="colaboradorForm">
+            <input type="hidden" id="colaboradorId">
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nome">Nome Completo:</label>
+                <input type="text" id="nome" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="data_nascimento">Data de Nascimento:</label>
+                <input type="date" id="data_nascimento" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input type="tel" id="telefone" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="setor">Setor:</label>
+                <input type="text" id="setor" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cargo">Cargo:</label>
+                <input type="text" id="cargo" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="lider_direto">Líder Direto:</label>
+                <input type="text" id="lider_direto" required>
+              </div>
+            </div>
+            
+            <div class="buttons">
+              <button type="submit" id="saveButton">Salvar</button>
+              <button type="button" id="cancelButton">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-    <div id="painelFiltrosExportacao" class="modal-overlay hidden">
+
+    <!-- Seção de Relatórios -->
+    <div id="relatoriosSection" class="section">
+      <div class="filters-container">
+        <h2>Filtros para Exportação</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="filtroNomeExport">Nome</label>
+            <input type="text" id="filtroNomeExport" placeholder="Nome do colaborador">
+          </div>
+          <div class="form-group">
+            <label for="filtroCPFExport">CPF</label>
+            <input type="text" id="filtroCPFExport" placeholder="CPF do colaborador">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="filtroSetorExport">Setor</label>
+            <input type="text" id="filtroSetorExport" placeholder="Setor">
+          </div>
+          <div class="form-group">
+            <label for="filtroCargoExport">Cargo</label>
+            <input type="text" id="filtroCargoExport" placeholder="Cargo">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="filtroLiderExport">Líder Direto</label>
+            <input type="text" id="filtroLiderExport" placeholder="Nome do líder direto">
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" id="btnLimparFiltros" class="btn-secondary">
+            <i class="fas fa-eraser"></i>
+            Limpar Filtros
+          </button>
+          <button type="button" id="exportarCSV" class="btn-primary">
+            <i class="fas fa-file-export"></i>
+            Exportar CSV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Visualização -->
+    <div id="viewModal" class="modal-overlay hidden">
       <div class="modal-content">
         <div class="modal-header">
-          <h3>Filtros para Exportação</h3>
-          <button id="btnFecharFiltros" class="close-btn"><i class="fas fa-times"></i></button>
+          <h3>Detalhes do Colaborador</h3>
+          <button id="btnFecharViewModal" class="close-btn"><i class="fas fa-times"></i></button>
         </div>
-        <div class="modal-body">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="filtroNomeExport">Nome:</label>
-              <input type="text" id="filtroNomeExport" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="filtroCPFExport">CPF:</label>
-              <input type="text" id="filtroCPFExport" class="form-control">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="filtroSetorExport">Setor:</label>
-              <input type="text" id="filtroSetorExport" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="filtroCargoExport">Cargo:</label>
-              <input type="text" id="filtroCargoExport" class="form-control">
-            </div>
-          </div>
-          
-          <div class="form-buttons">
-            <button id="btnLimparFiltros" class="btn btn-secondary">Limpar Filtros</button>
-            <button id="btnExportar" class="btn btn-primary">Exportar</button>
-          </div>
+        <div class="modal-body" id="viewModalBody">
+          <!-- Conteúdo será preenchido via JavaScript -->
         </div>
-      </div>
-    </div>
-    <!-- Formulário Minimizável -->
-    <div class="form-container collapsed" id="formContainer">
-      <div class="form-header">
-        <h2 id="formTitle">Cadastrar Novo Colaborador</h2>
-        <button id="collapseFormButton" class="collapse-button">
-          <i class="fas fa-minus"></i>
-        </button>
-      </div>
-      <div class="form-content">
-        <form id="colaboradorForm">
-          <input type="hidden" id="colaboradorId">
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="nome">Nome Completo:</label>
-              <input type="text" id="nome" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="cpf">CPF:</label>
-              <input type="text" id="cpf" required>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="data_nascimento">Data de Nascimento:</label>
-              <input type="date" id="data_nascimento" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="telefone">Telefone:</label>
-              <input type="tel" id="telefone" required>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="email">E-mail:</label>
-              <input type="email" id="email" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="setor">Setor:</label>
-              <input type="text" id="setor" required>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="cargo">Cargo:</label>
-              <input type="text" id="cargo" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="lider_direto">Líder Direto:</label>
-              <input type="text" id="lider_direto" required>
-            </div>
-          </div>
-          
-          <div class="buttons">
-            <button type="submit" id="saveButton">Salvar</button>
-            <button type="button" id="cancelButton">Cancelar</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>
+
   <script src="js/script.js"></script>
 </body>
 </html>
