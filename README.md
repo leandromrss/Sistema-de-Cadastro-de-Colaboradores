@@ -9,6 +9,7 @@ Sistema web para gerenciamento de colaboradores, desenvolvido com HTML, CSS e Ja
 - Barra lateral colapsável para navegação
 - Sistema de autenticação com token
 - Tema consistente com a identidade visual da empresa
+- Cards de redirecionamento rápido na tela inicial
 
 ### Colaboradores
 - Listagem de colaboradores com tabela interativa
@@ -16,6 +17,7 @@ Sistema web para gerenciamento de colaboradores, desenvolvido com HTML, CSS e Ja
 - Botões de ação para editar e excluir
 - Filtros de busca
 - Validação de campos obrigatórios
+- Formatação automática de CPF
 
 ### Relatórios
 - Exportação de relatórios em CSV
@@ -25,6 +27,8 @@ Sistema web para gerenciamento de colaboradores, desenvolvido com HTML, CSS e Ja
   - Setor
   - Cargo
   - Líder Direto
+- Botão de limpar filtros
+- Nome do arquivo com data atual
 
 ## Recursos de Interface
 
@@ -39,6 +43,7 @@ Sistema web para gerenciamento de colaboradores, desenvolvido com HTML, CSS e Ja
 - Ordenação por colunas
 - Linhas com hover effect
 - Botões de ação com ícones
+- Layout limpo sem índices
 
 ### Formulários
 - Layout em duas colunas para melhor organização
@@ -46,6 +51,13 @@ Sistema web para gerenciamento de colaboradores, desenvolvido com HTML, CSS e Ja
 - Animações suaves nas transições
 - Validação em tempo real
 - Botões de ação (Salvar/Cancelar) sempre visíveis
+
+### Cards de Redirecionamento
+- Acesso rápido às principais funcionalidades
+- Efeito hover com elevação
+- Ícones intuitivos
+- Descrições claras
+- Redirecionamento direto para seções específicas
 
 ### Responsividade
 - Adaptação para dispositivos móveis
@@ -55,12 +67,12 @@ Sistema web para gerenciamento de colaboradores, desenvolvido com HTML, CSS e Ja
 
 ## Atualizações Recentes
 
-### v1.1.0
-- Adicionado toggle no formulário de cadastro
-- Melhorias na animação de collapse/expand
-- Ajuste no tamanho máximo do formulário para evitar corte dos botões
-- Adicionado efeito hover no cabeçalho do formulário
-- Melhorias na transição de altura e opacidade
+### v1.2.0
+- Removidos índices da tabela de colaboradores
+- Corrigido redirecionamento do botão de relatórios
+- Ajustado tamanho do formulário para evitar corte dos botões
+- Melhorias na navegação entre seções
+- Otimização do layout da tela inicial
 
 ## Guia de Estilos
 
